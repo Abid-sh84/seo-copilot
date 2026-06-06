@@ -10,4 +10,4 @@ export type {
   UserProfile,
   Severity,
   CrawlMethod,
-} from '../../backend/src/types/audit.types';
+} from '../../backend/src/common/types';

@@ -88,7 +88,7 @@ function SEOCheckItem({ check }: { check: SEOCheck }) {
 // ── AEO/GEO Check Item ────────────────────────────────────────────────────────
 
 function AnalyzerCheckItem({ check }: { check: AEOCheck | GEOCheck }) {
-  const pct = Math.round((check.earnedPoints / check.maxPoints) * 100);
+  const pct = check.maxPoints > 0 ? Math.round((check.earnedPoints / check.maxPoints) * 100) : 0;
   return (
     <div className={`p-3 rounded-lg border ${check.passed ? 'border-green-500/20 bg-green-500/5' : 'border-border bg-muted/20'}`}>
       <div className="flex items-center justify-between mb-2">
@@ -126,7 +126,7 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
       : 'text-muted-foreground bg-muted/20 border-border';
 
   return (
-    <AccordionItem value={rec.checkId} className="border border-border rounded-lg overflow-hidden mb-2">
+    <AccordionItem value={`${rec.checkId}-${rec.issueType}`} className="border border-border rounded-lg overflow-hidden mb-2">
       <AccordionTrigger className="px-4 py-3 hover:bg-muted/20 hover:no-underline">
         <div className="flex items-center gap-3 text-left">
           <Badge className={`text-xs border flex-shrink-0 ${severityColor}`} variant="outline">
@@ -245,7 +245,7 @@ export default function AuditReportPage() {
           <span>Crawled with: <span className="font-mono">{audit.crawlMethod}</span></span>
           <span>Duration: <span className="font-mono">{(audit.crawlDurationMs / 1000).toFixed(1)}s</span></span>
           <span>Words: <span className="font-mono">{audit.pageWordCount.toLocaleString()}</span></span>
-          <span>Date: <span className="font-mono">{new Date(audit.timestamp).toLocaleDateString()}</span></span>
+          <span>Date: <span className="font-mono">{audit.timestamp ? new Date(audit.timestamp).toLocaleDateString() : '—'}</span></span>
         </div>
       </div>
 
@@ -324,9 +324,10 @@ export default function AuditReportPage() {
               </p>
               <Accordion type="single" collapsible>
                 {[...audit.recommendations]
-                  .sort((a, b) =>
-                    a.severity === 'high' ? -1 : b.severity === 'high' ? 1 : 0
-                  )
+                  .sort((a, b) => {
+                    const order = { high: 0, medium: 1, low: 2 };
+                    return order[a.severity] - order[b.severity];
+                  })
                   .map((rec) => (
                     <RecommendationCard key={rec.checkId} rec={rec} />
                   ))}
