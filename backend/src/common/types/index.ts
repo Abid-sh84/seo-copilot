@@ -94,3 +94,51 @@ export interface UserProfile {
   auditCount: number;
   createdAt: Date | string;
 }
+
+// ─── Blog Types ───────────────────────────────────────────────────────────────
+
+export interface BlogOutlineSection {
+  level: 'h1' | 'h2' | 'h3';
+  text: string;
+  description?: string;
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface GEOEnhancement {
+  entitySuggestions: string[];
+  citationPlaceholders: string[];
+  statisticHooks: string[];
+  internalLinkSuggestions: string[];
+}
+
+export interface BlogResult {
+  blogId: string;
+  keyword: string;
+  title: string;
+  metaDescription: string;
+  slug: string;
+  outline: BlogOutlineSection[];
+  introduction: string;
+  faqSection: FAQItem[];
+  faqSchema: string;
+  geoEnhancements: GEOEnhancement;
+  recommendedWordCount: number;
+  contentDepthTarget: string;
+  generationDurationMs: number;
+  status: 'completed' | 'failed';
+  createdAt: Date | string;
+}
+
+export interface BlogListItem {
+  blogId: string;
+  keyword: string;
+  title: string;
+  slug: string;
+  metaDescription: string;
+  createdAt: Date | string;
+  generationDurationMs: number;
+}

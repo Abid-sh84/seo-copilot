@@ -10,4 +10,9 @@ export type {
   UserProfile,
   Severity,
   CrawlMethod,
+  BlogOutlineSection,
+  FAQItem,
+  GEOEnhancement,
+  BlogResult,
+  BlogListItem,
 } from '../../backend/src/common/types';

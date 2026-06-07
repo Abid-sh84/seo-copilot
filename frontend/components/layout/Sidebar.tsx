@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { BarChart3, LogOut, Search, Settings } from 'lucide-react';
+import { BarChart3, LogOut, PenLine, Search, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +17,7 @@ interface SidebarProps {
 
 const navItems = [
   { href: '/dashboard', icon: BarChart3, label: 'Dashboard' },
+  { href: '/blog',      icon: PenLine,   label: 'Blog Generator' },
   { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
 ];
 
