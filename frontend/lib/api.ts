@@ -60,3 +60,25 @@ export async function healthCheck() {
   const response = await apiClient.get('/api/health');
   return response.data;
 }
+
+// ── Blog API Functions ────────────────────────────────────────────────────────
+
+export async function generateBlog(keyword: string, tone?: string, targetAudience?: string) {
+  const response = await apiClient.post('/api/blog/generate', { keyword, tone, targetAudience });
+  return response.data;
+}
+
+export async function getBlogs(page = 1, limit = 10) {
+  const response = await apiClient.get('/api/blog', { params: { page, limit } });
+  return response.data;
+}
+
+export async function getBlog(id: string) {
+  const response = await apiClient.get(`/api/blog/${id}`);
+  return response.data;
+}
+
+export async function deleteBlog(id: string) {
+  const response = await apiClient.delete(`/api/blog/${id}`);
+  return response.data;
+}
