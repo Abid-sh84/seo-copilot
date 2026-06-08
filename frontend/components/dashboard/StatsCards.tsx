@@ -5,6 +5,7 @@ import { getAudits } from '@/lib/api';
 import { BarChart3, Globe, Search, TrendingUp } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { AuditListItem } from '@/types/audit';
+//stats card
 
 function StatCard({
   icon: Icon,
