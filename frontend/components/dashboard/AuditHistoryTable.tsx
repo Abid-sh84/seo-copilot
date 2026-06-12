@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getAudits, deleteAudit } from '@/lib/api';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -12,14 +11,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AuditListItem } from '@/types/audit';
 
 function ScoreBadge({ score }: { score: number }) {
-  const color =
+  const style =
     score >= 70
-      ? 'bg-green-500/15 text-green-400 border-green-500/20'
+      ? 'bg-green-50 text-green-700 border-green-200'
       : score >= 40
-      ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20'
-      : 'bg-red-500/15 text-red-400 border-red-500/20';
+      ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+      : 'bg-red-50 text-red-600 border-red-200';
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border ${color}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold border ${style}`}>
       {score}
     </span>
   );
@@ -43,15 +42,15 @@ export function AuditHistoryTable() {
 
   if (isLoading) {
     return (
-      <div className="glass-card overflow-hidden">
-        <div className="space-y-0.5">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="space-y-0">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 border-b border-border last:border-0">
-              <Skeleton className="h-4 flex-1" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-24" />
+            <div key={i} className="flex items-center gap-4 p-4 border-b border-slate-100 last:border-0">
+              <div className="h-4 flex-1 bg-slate-100 rounded animate-pulse" />
+              <div className="h-4 w-12 bg-slate-100 rounded animate-pulse" />
+              <div className="h-4 w-12 bg-slate-100 rounded animate-pulse" />
+              <div className="h-4 w-12 bg-slate-100 rounded animate-pulse" />
+              <div className="h-4 w-24 bg-slate-100 rounded animate-pulse" />
             </div>
           ))}
         </div>
@@ -61,7 +60,7 @@ export function AuditHistoryTable() {
 
   if (isError) {
     return (
-      <div className="glass-card p-8 text-center text-muted-foreground">
+      <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500">
         Failed to load audit history. Please try again.
       </div>
     );
@@ -72,12 +71,12 @@ export function AuditHistoryTable() {
 
   if (audits.length === 0) {
     return (
-      <div className="glass-card p-12 text-center">
-        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-          <ExternalLink className="w-5 h-5 text-muted-foreground" />
+      <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+          <ExternalLink className="w-5 h-5 text-slate-400" />
         </div>
-        <p className="font-medium mb-1">No audits yet</p>
-        <p className="text-sm text-muted-foreground">
+        <p className="font-semibold text-slate-800 mb-1">No audits yet</p>
+        <p className="text-sm text-slate-500">
           Enter a URL above to run your first audit
         </p>
       </div>
@@ -86,9 +85,9 @@ export function AuditHistoryTable() {
 
   return (
     <div className="space-y-4">
-      <div className="glass-card overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         {/* Table Header */}
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 py-3 border-b border-border bg-muted/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 py-3 border-b border-slate-100 bg-slate-50 text-xs font-semibold text-slate-400 uppercase tracking-wider">
           <span>URL</span>
           <span className="text-center w-12">SEO</span>
           <span className="text-center w-12">AEO</span>
@@ -103,19 +102,19 @@ export function AuditHistoryTable() {
             <Link
               key={audit.auditId}
               href={`/audit/${audit.auditId}`}
-              className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 py-3.5 border-b border-border last:border-0 hover:bg-muted/20 transition-colors items-center group"
+              className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 py-3.5 border-b border-slate-100 last:border-0 hover:bg-blue-50/50 transition-colors items-center group"
               id={`audit-row-${audit.auditId}`}
             >
               <div className="min-w-0">
-                <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                <p className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-600 transition-colors">
                   {audit.pageTitle || audit.url}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">{audit.url}</p>
+                <p className="text-xs text-slate-400 truncate">{audit.url}</p>
               </div>
               <div className="w-12 text-center"><ScoreBadge score={audit.seoScore} /></div>
               <div className="w-12 text-center"><ScoreBadge score={audit.aeoScore} /></div>
               <div className="w-12 text-center"><ScoreBadge score={audit.geoScore} /></div>
-              <div className="w-24 text-xs text-muted-foreground">
+              <div className="w-24 text-xs text-slate-400">
                 {new Date(audit.timestamp).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
@@ -124,17 +123,15 @@ export function AuditHistoryTable() {
               </div>
               <div
                 className="w-16 flex justify-end"
-                onClick={(e) => e.preventDefault()} // Prevent row click on delete
+                onClick={(e) => e.preventDefault()}
               >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                <button
+                  className="h-7 w-7 flex items-center justify-center opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                   onClick={() => deleteAuditMutate(audit.auditId)}
                   id={`delete-audit-${audit.auditId}`}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                </Button>
+                </button>
               </div>
             </Link>
           ))}
@@ -143,32 +140,30 @@ export function AuditHistoryTable() {
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <div className="flex items-center justify-between text-sm text-slate-500">
           <span>
             Showing {(page - 1) * 10 + 1}–{Math.min(page * 10, pagination.total)} of{' '}
             {pagination.total} audits
           </span>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
+            <button
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               disabled={!pagination.hasPrevPage}
               onClick={() => setPage((p) => p - 1)}
               id="pagination-prev-btn"
             >
               <ChevronLeft className="w-4 h-4" />
               Prev
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
+            </button>
+            <button
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               disabled={!pagination.hasNextPage}
               onClick={() => setPage((p) => p + 1)}
               id="pagination-next-btn"
             >
               Next
               <ChevronRight className="w-4 h-4" />
-            </Button>
+            </button>
           </div>
         </div>
       )}
