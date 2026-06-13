@@ -7,6 +7,7 @@ import compression from 'compression';
 import { generalLimiter } from './common/middleware/rateLimiter';
 import { auditRouter } from './modules/audit';
 import { blogRouter }  from './modules/blog';
+import { authRouter }  from './modules/auth';
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.get('/api/health', (_, res) => {
 });
 
 // ── Module Routes ─────────────────────────────────────────────────────────────
+app.use('/api/auth',   authRouter);   // POST /api/auth/upsert-user (internal)
 app.use('/api/audit',  auditRouter);   // POST /api/audit  (run audit)
 app.use('/api/audits', auditRouter);   // GET  /api/audits (history + single)
 app.use('/api/blog',   blogRouter);    // POST /api/blog/generate, GET /api/blog
