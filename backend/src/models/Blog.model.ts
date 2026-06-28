@@ -44,8 +44,8 @@ export interface GEOEnhancement {
 
 const blogOutlineSchema = new Schema<BlogOutlineSection>(
   {
-    level:       { type: String, enum: ['h1', 'h2', 'h3'], required: true },
-    text:        { type: String, required: true },
+    level: { type: String, enum: ['h1', 'h2', 'h3'], required: true },
+    text: { type: String, required: true },
     description: { type: String },
   },
   { _id: false }
@@ -54,16 +54,16 @@ const blogOutlineSchema = new Schema<BlogOutlineSection>(
 const faqItemSchema = new Schema<FAQItem>(
   {
     question: { type: String, required: true },
-    answer:   { type: String, required: true },
+    answer: { type: String, required: true },
   },
   { _id: false }
 );
 
 const geoEnhancementSchema = new Schema<GEOEnhancement>(
   {
-    entitySuggestions:       [{ type: String }],
-    citationPlaceholders:    [{ type: String }],
-    statisticHooks:          [{ type: String }],
+    entitySuggestions: [{ type: String }],
+    citationPlaceholders: [{ type: String }],
+    statisticHooks: [{ type: String }],
     internalLinkSuggestions: [{ type: String }],
   },
   { _id: false }
@@ -71,21 +71,21 @@ const geoEnhancementSchema = new Schema<GEOEnhancement>(
 
 const blogSchema = new Schema<IBlog>(
   {
-    userId:              { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    keyword:             { type: String, required: true },
-    title:               { type: String, required: true },
-    metaDescription:     { type: String, required: true },
-    slug:                { type: String, required: true },
-    outline:             { type: [blogOutlineSchema], required: true },
-    introduction:        { type: String, required: true },
-    faqSection:          { type: [faqItemSchema], required: true },
-    faqSchema:           { type: String, required: true },
-    geoEnhancements:     { type: geoEnhancementSchema, required: true },
-    recommendedWordCount:{ type: Number, required: true },
-    contentDepthTarget:  { type: String, required: true },
-    status:              { type: String, enum: ['completed', 'failed'], default: 'completed' },
-    errorMessage:        { type: String },
-    generationDurationMs:{ type: Number, default: 0 },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    keyword: { type: String, required: true },
+    title: { type: String, default: '' },
+    metaDescription: { type: String, default: '' },
+    slug: { type: String, default: '' },
+    outline: { type: [blogOutlineSchema], default: [] },
+    introduction: { type: String, default: '' },
+    faqSection: { type: [faqItemSchema], default: [] },
+    faqSchema: { type: String, default: '' },
+    geoEnhancements: { type: geoEnhancementSchema },
+    recommendedWordCount: { type: Number, default: 0 },
+    contentDepthTarget: { type: String, default: '' },
+    status: { type: String, enum: ['completed', 'failed'], default: 'completed' },
+    errorMessage: { type: String },
+    generationDurationMs: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

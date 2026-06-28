@@ -87,6 +87,22 @@ function isJsSpa($: CheerioAPI): boolean {
   return $('body').text().replace(/\s+/g, ' ').trim().length < 100;
 }
 
+// ─── Error classifier ────────────────────────────────────────────────────────
+
+function classifyNetworkError(err: unknown): string {
+  if (err && typeof err === 'object') {
+    const code    = (err as Record<string, unknown>).code as string | undefined;
+    const cause   = (err as Record<string, unknown>).cause as Record<string, unknown> | undefined;
+    const errCode = code ?? cause?.code as string | undefined;
+
+    if (errCode === 'ENOTFOUND')  return 'Domain not found — the URL may be mistyped or the site may be offline.';
+    if (errCode === 'ECONNREFUSED') return 'Connection refused — the server actively rejected the connection.';
+    if (errCode === 'ETIMEDOUT' || errCode === 'ECONNRESET') return 'Connection timed out — the server took too long to respond.';
+    if (errCode === 'ERR_INVALID_URL') return 'The URL provided is not valid.';
+  }
+  return err instanceof Error ? err.message : 'Unable to reach the URL.';
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export async function crawlUrl(url: string): Promise<CrawlResult> {
@@ -94,15 +110,40 @@ export async function crawlUrl(url: string): Promise<CrawlResult> {
     url = `https://${url}`;
   }
 
+  let axiosError: unknown;
+
+  // Try Axios first (fast, lightweight)
   try {
     const result = await crawlWithAxios(url);
     if (isJsSpa(result.$)) {
       console.log(`[Crawler] JS SPA detected, falling back to Puppeteer: ${url}`);
-      return await crawlWithPuppeteer(url);
+      try {
+        return await crawlWithPuppeteer(url);
+      } catch (puppeteerError) {
+        throw new Error(classifyNetworkError(puppeteerError));
+      }
     }
     return result;
-  } catch (axiosError) {
-    console.log(`[Crawler] Axios failed, retrying with Puppeteer: ${url}`, axiosError);
+  } catch (err) {
+    axiosError = err;
+  }
+
+  // Axios failed — skip Puppeteer for DNS/unreachable errors (it will fail too)
+  const axiosCode = (
+    (axiosError as Record<string, unknown>)?.code ??
+    ((axiosError as Record<string, unknown>)?.cause as Record<string, unknown>)?.code
+  ) as string | undefined;
+
+  if (axiosCode === 'ENOTFOUND' || axiosCode === 'ECONNREFUSED') {
+    throw new Error(classifyNetworkError(axiosError));
+  }
+
+  // For other Axios failures (JS SPAs, bot blocks, etc.) try Puppeteer
+  console.log(`[Crawler] Axios failed, retrying with Puppeteer: ${url}`);
+  try {
     return await crawlWithPuppeteer(url);
+  } catch (puppeteerError) {
+    // Both failed — throw the most descriptive error
+    throw new Error(classifyNetworkError(puppeteerError) || classifyNetworkError(axiosError));
   }
 }
