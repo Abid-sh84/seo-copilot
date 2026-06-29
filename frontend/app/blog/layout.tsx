@@ -1,8 +1,14 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { Sidebar } from '@/components/layout/Sidebar';
 
-export default async function DashboardLayout({
+export const metadata: Metadata = {
+  title: 'Blog Generator — SEO Copilot',
+  description: 'Generate SEO + AEO + GEO optimized blog content with Google Gemini AI.',
+};
+
+export default async function BlogLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -14,21 +20,9 @@ export default async function DashboardLayout({
   }
 
   return (
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    <div className="dark flex h-screen bg-background overflow-hidden">
-      <Sidebar user={session.user} />
-      <main className="flex-1 overflow-y-auto">
-=======
-    <div className="flex h-screen bg-slate-50">
-      <Sidebar user={session.user} />
-      <main className="flex-1 overflow-y-auto min-w-0">
->>>>>>> Stashed changes
-=======
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       <Sidebar user={session.user} />
       <main className="flex-1 overflow-y-auto bg-slate-50">
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
         <div className="max-w-7xl mx-auto p-6 lg:p-8">{children}</div>
       </main>
     </div>

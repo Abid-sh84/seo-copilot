@@ -3,9 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { getAudit } from '@/lib/api';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Accordion,
@@ -27,7 +25,7 @@ function ScoreGauge({ score, label, color }: { score: number; label: string; col
     <div className="flex flex-col items-center">
       <div className="relative w-28 h-28">
         <svg className="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="6" className="text-muted/30" />
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" strokeWidth="6" />
           <circle
             cx="50"
             cy="50"
@@ -38,15 +36,15 @@ function ScoreGauge({ score, label, color }: { score: number; label: string; col
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 8px ${color}60)`, transition: 'stroke-dashoffset 1s ease' }}
+            style={{ transition: 'stroke-dashoffset 1s ease' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold">{score}</span>
-          <span className="text-xs text-muted-foreground">/100</span>
+          <span className="text-2xl font-extrabold text-slate-900">{score}</span>
+          <span className="text-xs text-slate-400">/100</span>
         </div>
       </div>
-      <span className="text-sm font-medium mt-2 text-muted-foreground">{label}</span>
+      <span className="text-sm font-medium mt-2 text-slate-500">{label}</span>
     </div>
   );
 }
@@ -54,31 +52,31 @@ function ScoreGauge({ score, label, color }: { score: number; label: string; col
 // ── SEO Check Item ────────────────────────────────────────────────────────────
 
 function SEOCheckItem({ check }: { check: SEOCheck }) {
-  const severityColors = {
-    high: 'border-red-500/30 bg-red-500/5',
-    medium: 'border-yellow-500/30 bg-yellow-500/5',
-    low: 'border-border bg-muted/20',
+  const severityStyles = {
+    high: 'border-red-200 bg-red-50',
+    medium: 'border-yellow-200 bg-yellow-50',
+    low: 'border-slate-200 bg-slate-50',
   };
 
   return (
-    <div className={`flex items-start gap-3 p-3 rounded-lg border ${check.passed ? 'border-green-500/20 bg-green-500/5' : severityColors[check.severity]}`}>
+    <div className={`flex items-start gap-3 p-3 rounded-xl border ${check.passed ? 'border-green-200 bg-green-50' : severityStyles[check.severity]}`}>
       <div className="mt-0.5 flex-shrink-0">
         {check.passed ? (
-          <CheckCircle2 className="w-4 h-4 text-green-400" />
+          <CheckCircle2 className="w-4 h-4 text-green-500" />
         ) : check.severity === 'high' ? (
-          <XCircle className="w-4 h-4 text-red-400" />
+          <XCircle className="w-4 h-4 text-red-500" />
         ) : (
-          <AlertCircle className="w-4 h-4 text-yellow-400" />
+          <AlertCircle className="w-4 h-4 text-yellow-500" />
         )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-0.5">
-          <span className="text-sm font-medium">{check.name}</span>
-          <span className="text-xs text-muted-foreground flex-shrink-0">{check.weight}% weight</span>
+          <span className="text-sm font-semibold text-slate-800">{check.name}</span>
+          <span className="text-xs text-slate-400 flex-shrink-0">{check.weight}% weight</span>
         </div>
-        <p className="text-xs text-muted-foreground">{check.message}</p>
+        <p className="text-xs text-slate-500">{check.message}</p>
         {check.value && (
-          <p className="text-xs text-muted-foreground/70 mt-1 font-mono truncate">Found: {check.value}</p>
+          <p className="text-xs text-slate-400 mt-1 font-mono truncate">Found: {check.value}</p>
         )}
       </div>
     </div>
@@ -90,27 +88,27 @@ function SEOCheckItem({ check }: { check: SEOCheck }) {
 function AnalyzerCheckItem({ check }: { check: AEOCheck | GEOCheck }) {
   const pct = check.maxPoints > 0 ? Math.round((check.earnedPoints / check.maxPoints) * 100) : 0;
   return (
-    <div className={`p-3 rounded-lg border ${check.passed ? 'border-green-500/20 bg-green-500/5' : 'border-border bg-muted/20'}`}>
+    <div className={`p-3 rounded-xl border ${check.passed ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-slate-50'}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {check.passed ? (
-            <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
           ) : (
-            <XCircle className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            <XCircle className="w-4 h-4 text-slate-400 flex-shrink-0" />
           )}
-          <span className="text-sm font-medium">{check.name}</span>
+          <span className="text-sm font-semibold text-slate-800">{check.name}</span>
         </div>
-        <span className="text-xs font-mono text-muted-foreground flex-shrink-0">
+        <span className="text-xs font-mono text-slate-400 flex-shrink-0">
           {check.earnedPoints}/{check.maxPoints} pts
         </span>
       </div>
-      <div className="w-full bg-muted/40 rounded-full h-1 mb-2">
+      <div className="w-full bg-slate-200 rounded-full h-1.5 mb-2">
         <div
-          className="h-1 rounded-full bg-primary transition-all"
+          className="h-1.5 rounded-full bg-blue-500 transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <p className="text-xs text-muted-foreground">{check.details}</p>
+      <p className="text-xs text-slate-500">{check.details}</p>
     </div>
   );
 }
@@ -118,27 +116,27 @@ function AnalyzerCheckItem({ check }: { check: AEOCheck | GEOCheck }) {
 // ── Recommendation Card ───────────────────────────────────────────────────────
 
 function RecommendationCard({ rec }: { rec: Recommendation }) {
-  const severityColor =
+  const severityStyle =
     rec.severity === 'high'
-      ? 'text-red-400 bg-red-500/10 border-red-500/20'
+      ? 'text-red-600 bg-red-50 border-red-200'
       : rec.severity === 'medium'
-      ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20'
-      : 'text-muted-foreground bg-muted/20 border-border';
+      ? 'text-yellow-700 bg-yellow-50 border-yellow-200'
+      : 'text-slate-500 bg-slate-50 border-slate-200';
 
   return (
-    <AccordionItem value={`${rec.checkId}-${rec.issueType}`} className="border border-border rounded-lg overflow-hidden mb-2">
-      <AccordionTrigger className="px-4 py-3 hover:bg-muted/20 hover:no-underline">
+    <AccordionItem value={`${rec.checkId}-${rec.issueType}`} className="border border-slate-200 rounded-xl overflow-hidden mb-2">
+      <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 hover:no-underline">
         <div className="flex items-center gap-3 text-left">
-          <Badge className={`text-xs border flex-shrink-0 ${severityColor}`} variant="outline">
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border flex-shrink-0 ${severityStyle}`}>
             {rec.severity}
-          </Badge>
-          <span className="text-sm font-medium">{rec.issueType}</span>
+          </span>
+          <span className="text-sm font-medium text-slate-800">{rec.issueType}</span>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4 border-t border-border">
-        <p className="text-sm text-muted-foreground mb-3">{rec.suggestion}</p>
+      <AccordionContent className="px-4 pb-4 border-t border-slate-100">
+        <p className="text-sm text-slate-600 mb-3 mt-3">{rec.suggestion}</p>
         {rec.codeSnippet && (
-          <pre className="bg-muted/30 border border-border rounded-lg p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
+          <pre className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap text-slate-700">
             {rec.codeSnippet}
           </pre>
         )}
@@ -164,11 +162,11 @@ export default function AuditReportPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
+        <div className="h-8 w-48 bg-slate-100 rounded-lg animate-pulse" />
         <div className="grid grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
+          {[1, 2, 3].map((i) => <div key={i} className="h-40 bg-slate-100 rounded-2xl animate-pulse" />)}
         </div>
-        <Skeleton className="h-64 rounded-xl" />
+        <div className="h-64 bg-slate-100 rounded-2xl animate-pulse" />
       </div>
     );
   }
@@ -176,103 +174,106 @@ export default function AuditReportPage() {
   if (isError || !audit) {
     return (
       <div className="text-center py-20">
-        <XCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-        <h2 className="text-lg font-semibold mb-2">Audit not found</h2>
-        <p className="text-muted-foreground mb-6">This audit may have been deleted or doesn&apos;t exist.</p>
+        <XCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+        <h2 className="text-lg font-bold text-slate-800 mb-2">Audit not found</h2>
+        <p className="text-slate-500 mb-6">This audit may have been deleted or doesn&apos;t exist.</p>
         <Link href="/dashboard">
-          <Button variant="outline">Back to Dashboard</Button>
+          <button className="px-5 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            Back to Dashboard
+          </button>
         </Link>
       </div>
     );
   }
 
-  const geoColors = { low: '#f87171', medium: '#fbbf24', high: '#4ade80' };
+  const geoColors = { low: '#ef4444', medium: '#f59e0b', high: '#22c55e' };
   const geoColor = geoColors[audit.geoReadiness];
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="gap-1.5" id="back-to-dashboard-btn">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3 min-w-0">
+          <Link href="/dashboard" className="mt-0.5 shrink-0">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors" id="back-to-dashboard-btn">
               <ArrowLeft className="w-4 h-4" />
-              Dashboard
-            </Button>
+              Back
+            </button>
           </Link>
-          <div>
-            <h1 className="text-xl font-bold">{audit.pageTitle || 'Audit Report'}</h1>
+          <div className="min-w-0">
+            <h1 className="text-xl font-extrabold text-slate-900 truncate">{audit.pageTitle || 'Audit Report'}</h1>
             <a
               href={audit.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
+              className="text-sm text-slate-400 hover:text-blue-600 flex items-center gap-1 transition-colors mt-0.5"
             >
               {audit.url}
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-3 h-3 shrink-0" />
             </a>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="shrink-0">
+          <button
             onClick={() => router.push(`/dashboard?url=${encodeURIComponent(audit.url)}`)}
             id="re-audit-btn"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-colors"
           >
-            <RefreshCw className="w-4 h-4 mr-1.5" />
+            <RefreshCw className="w-3.5 h-3.5" />
             Re-audit
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Score Gauges */}
-      <div className="glass-card p-6">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <div className="flex flex-col sm:flex-row items-center justify-around gap-8">
-          <ScoreGauge score={audit.seoScore} label="SEO Score" color="#818cf8" />
+          <ScoreGauge score={audit.seoScore} label="SEO Score" color="#2563eb" />
           <div className="text-center">
-            <div className="text-5xl font-bold gradient-text">{audit.overallScore}</div>
-            <div className="text-sm text-muted-foreground mt-1">Overall Visibility</div>
-            <div className={`mt-2 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold`}
-              style={{ color: geoColor, background: `${geoColor}15` }}>
+            <div className="text-5xl font-extrabold text-slate-900">{audit.overallScore}</div>
+            <div className="text-sm text-slate-500 mt-1">Overall Visibility</div>
+            <div
+              className="mt-2 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border"
+              style={{ color: geoColor, background: `${geoColor}15`, borderColor: `${geoColor}30` }}
+            >
               GEO Readiness: {audit.geoReadiness.charAt(0).toUpperCase() + audit.geoReadiness.slice(1)}
             </div>
           </div>
-          <ScoreGauge score={audit.aeoScore} label="AEO Score" color="#67e8f9" />
-          <ScoreGauge score={audit.geoScore} label="GEO Score" color="#86efac" />
+          <ScoreGauge score={audit.aeoScore} label="AEO Score" color="#0891b2" />
+          <ScoreGauge score={audit.geoScore} label="GEO Score" color="#059669" />
         </div>
-        <div className="flex justify-center gap-6 mt-6 text-xs text-muted-foreground border-t border-border pt-4">
-          <span>Crawled with: <span className="font-mono">{audit.crawlMethod}</span></span>
-          <span>Duration: <span className="font-mono">{(audit.crawlDurationMs / 1000).toFixed(1)}s</span></span>
-          <span>Words: <span className="font-mono">{audit.pageWordCount.toLocaleString()}</span></span>
-          <span>Date: <span className="font-mono">{audit.timestamp ? new Date(audit.timestamp).toLocaleDateString() : '—'}</span></span>
+        <div className="flex justify-center gap-6 mt-6 text-xs text-slate-400 border-t border-slate-100 pt-4">
+          <span>Crawled with: <span className="font-mono text-slate-600">{audit.crawlMethod}</span></span>
+          <span>Duration: <span className="font-mono text-slate-600">{(audit.crawlDurationMs / 1000).toFixed(1)}s</span></span>
+          <span>Words: <span className="font-mono text-slate-600">{audit.pageWordCount.toLocaleString()}</span></span>
+          <span>Date: <span className="font-mono text-slate-600">{audit.timestamp ? new Date(audit.timestamp).toLocaleDateString() : '—'}</span></span>
         </div>
       </div>
 
       {/* Check Results Tabs */}
       <Tabs defaultValue="seo" className="space-y-4">
-        <TabsList className="glass border border-border">
-          <TabsTrigger value="seo" id="tab-seo">
+        <TabsList className="bg-slate-100 border border-slate-200 p-1 rounded-xl">
+          <TabsTrigger value="seo" id="tab-seo" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
             SEO Checks
-            <span className="ml-2 text-xs text-muted-foreground">
+            <span className="ml-2 text-xs text-slate-400">
               {audit.seoChecks.filter((c) => c.passed).length}/{audit.seoChecks.length}
             </span>
           </TabsTrigger>
-          <TabsTrigger value="aeo" id="tab-aeo">
+          <TabsTrigger value="aeo" id="tab-aeo" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
             AEO Checks
-            <span className="ml-2 text-xs text-muted-foreground">
+            <span className="ml-2 text-xs text-slate-400">
               {audit.aeoChecks.filter((c) => c.passed).length}/{audit.aeoChecks.length}
             </span>
           </TabsTrigger>
-          <TabsTrigger value="geo" id="tab-geo">
+          <TabsTrigger value="geo" id="tab-geo" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
             GEO Checks
-            <span className="ml-2 text-xs text-muted-foreground">
+            <span className="ml-2 text-xs text-slate-400">
               {audit.geoChecks.filter((c) => c.passed).length}/{audit.geoChecks.length}
             </span>
           </TabsTrigger>
-          <TabsTrigger value="recommendations" id="tab-recs">
+          <TabsTrigger value="recommendations" id="tab-recs" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
             AI Fixes
-            <span className="ml-2 text-xs text-muted-foreground">
+            <span className="ml-2 text-xs text-slate-400">
               {audit.recommendations.length}
             </span>
           </TabsTrigger>
@@ -310,16 +311,16 @@ export default function AuditReportPage() {
 
         <TabsContent value="recommendations">
           {audit.recommendations.length === 0 ? (
-            <div className="glass-card p-12 text-center">
-              <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-3" />
-              <p className="font-medium">No recommendations needed!</p>
-              <p className="text-sm text-muted-foreground mt-1">
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+              <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-3" />
+              <p className="font-bold text-slate-800">No recommendations needed!</p>
+              <p className="text-sm text-slate-500 mt-1">
                 Your site passed all checks. Great work!
               </p>
             </div>
           ) : (
             <div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-slate-500 mb-4">
                 {audit.recommendations.length} AI-generated recommendations for your site:
               </p>
               <Accordion type="single" collapsible>
