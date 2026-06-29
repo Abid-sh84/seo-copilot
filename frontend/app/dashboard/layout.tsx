@@ -14,9 +14,15 @@ export default async function DashboardLayout({
   }
 
   return (
+<<<<<<< Updated upstream
     <div className="dark flex h-screen bg-background overflow-hidden">
       <Sidebar user={session.user} />
       <main className="flex-1 overflow-y-auto">
+=======
+    <div className="flex h-screen bg-slate-50">
+      <Sidebar user={session.user} />
+      <main className="flex-1 overflow-y-auto min-w-0">
+>>>>>>> Stashed changes
         <div className="max-w-7xl mx-auto p-6 lg:p-8">{children}</div>
       </main>
     </div>

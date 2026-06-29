@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Search, Brain, Globe, Zap, BarChart3, Shield, CheckCircle, Star } from 'lucide-react';
+import { ArrowRight, Search, Brain, Globe, Zap, BarChart3, Shield, CheckCircle, Star, LayoutDashboard } from 'lucide-react';
+import { auth } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'SEO Copilot — AI-Powered SEO, AEO & GEO Audit Platform',
@@ -48,19 +49,22 @@ const testimonials = [
 
 const avatarColors = ['#3B82F6','#8B5CF6','#EC4899','#10B981'];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
 
       {/* ── Navbar ─────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          {/* Logo — links to home */}
+          <Link href="/" id="nav-logo" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
               <Search className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-lg">SEO <span className="text-blue-600">Copilot</span></span>
-          </div>
+          </Link>
           <nav className="hidden md:flex items-center gap-8">
             {['#features','#how-it-works','#testimonials'].map((href, i) => (
               <a key={href} href={href} className="text-sm text-slate-600 hover:text-slate-900 transition-colors font-medium">
@@ -69,10 +73,23 @@ export default function HomePage() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors" id="nav-login">Login</Link>
-            <Link href="/login" id="nav-cta" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-sm">
-              Try for free
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                id="nav-dashboard"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-sm"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors" id="nav-login">Login</Link>
+                <Link href="/login" id="nav-cta" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-sm">
+                  Try for free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -97,8 +114,8 @@ export default function HomePage() {
               The only platform that audits across traditional search, AI answer engines (ChatGPT, Perplexity), and generative AI citations — in under 10 seconds.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/login" id="hero-start" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors text-base shadow-md shadow-blue-500/20">
-                Start Free Audit <ArrowRight className="w-4 h-4" />
+              <Link href={isLoggedIn ? '/dashboard' : '/login'} id="hero-start" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors text-base shadow-md shadow-blue-500/20">
+                {isLoggedIn ? 'Go to Dashboard' : 'Start Free Audit'} <ArrowRight className="w-4 h-4" />
               </Link>
               <a href="#how-it-works" className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-7 py-3.5 rounded-lg border border-slate-200 transition-colors text-base">
                 See How It Works
@@ -292,8 +309,8 @@ export default function HomePage() {
             Ready to rank on every <span className="text-blue-600">search engine?</span>
           </h2>
           <p className="text-slate-500 text-lg mb-8">Sign in with Google and run your first audit in under 30 seconds. No credit card required.</p>
-          <Link href="/login" id="cta-btn" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-9 py-4 rounded-xl text-lg transition-colors shadow-xl shadow-blue-500/20">
-            Start Free Audit <ArrowRight className="w-5 h-5" />
+          <Link href={isLoggedIn ? '/dashboard' : '/login'} id="cta-btn" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-9 py-4 rounded-xl text-lg transition-colors shadow-xl shadow-blue-500/20">
+            {isLoggedIn ? 'Go to Dashboard' : 'Start Free Audit'} <ArrowRight className="w-5 h-5" />
           </Link>
           <p className="text-slate-400 text-sm mt-4">Free forever · No credit card · Powered by Gemini AI</p>
         </div>
