@@ -1,10 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getAudits, deleteAudit } from '@/lib/api';
+import { getAudits, deleteAudit, downloadAuditPDF, downloadAuditExcel } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash2, ExternalLink, ChevronLeft, ChevronRight, FileText, FileSpreadsheet } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -93,7 +93,7 @@ export function AuditHistoryTable() {
           <span className="text-center w-12">AEO</span>
           <span className="text-center w-12">GEO</span>
           <span className="w-24">Date</span>
-          <span className="w-16" />
+          <span className="w-24" />
         </div>
 
         {/* Table Rows */}
@@ -122,13 +122,33 @@ export function AuditHistoryTable() {
                 })}
               </div>
               <div
-                className="w-16 flex justify-end"
+                className="w-24 flex justify-end items-center gap-1"
                 onClick={(e) => e.preventDefault()}
               >
+                {/* Export PDF */}
+                <button
+                  className="h-7 w-7 flex items-center justify-center opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                  onClick={() => downloadAuditPDF(audit.auditId, audit.pageTitle).catch(() => {})}
+                  title="Download PDF"
+                  id={`export-pdf-${audit.auditId}`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                </button>
+                {/* Export Excel */}
+                <button
+                  className="h-7 w-7 flex items-center justify-center opacity-0 group-hover:opacity-100 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                  onClick={() => downloadAuditExcel(audit.auditId, audit.pageTitle).catch(() => {})}
+                  title="Download Excel"
+                  id={`export-excel-${audit.auditId}`}
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                </button>
+                {/* Delete */}
                 <button
                   className="h-7 w-7 flex items-center justify-center opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                   onClick={() => deleteAuditMutate(audit.auditId)}
                   id={`delete-audit-${audit.auditId}`}
+                  title="Delete audit"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

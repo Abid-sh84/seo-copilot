@@ -11,9 +11,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, ExternalLink, RefreshCw } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, ExternalLink, RefreshCw, Download, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import type { SEOCheck, AEOCheck, GEOCheck, Recommendation, AuditResult } from '@/types/audit';
+import { downloadAuditPDF, downloadAuditExcel } from '@/lib/api';
+import { useState } from 'react';
 
 // ── Score Gauge ───────────────────────────────────────────────────────────────
 
@@ -151,6 +153,9 @@ export default function AuditReportPage() {
   const params = useParams();
   const router = useRouter();
   const auditId = params.id as string;
+  const [exportingPdf, setExportingPdf] = useState(false);
+  const [exportingXls, setExportingXls] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['audit', auditId],
@@ -213,7 +218,55 @@ export default function AuditReportPage() {
             </a>
           </div>
         </div>
-        <div className="shrink-0">
+        <div className="shrink-0 flex items-center gap-2">
+          {/* Export dropdown */}
+          <div className="relative group">
+            <button
+              id="export-btn"
+              disabled={exportingPdf || exportingXls}
+              className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 shadow-sm transition-colors disabled:opacity-50"
+            >
+              {exportingPdf || exportingXls ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Download className="w-3.5 h-3.5" />
+              )}
+              Export
+            </button>
+            <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 overflow-hidden">
+              <button
+                id="export-pdf-btn"
+                disabled={exportingPdf}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                onClick={async () => {
+                  setExportingPdf(true);
+                  setExportError(null);
+                  try { await downloadAuditPDF(auditId, audit.pageTitle); }
+                  catch (e) { setExportError('PDF export failed'); }
+                  finally { setExportingPdf(false); }
+                }}
+              >
+                <FileText className="w-4 h-4 text-red-500" />
+                {exportingPdf ? 'Generating PDF…' : 'Download PDF'}
+              </button>
+              <button
+                id="export-excel-btn"
+                disabled={exportingXls}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-100 disabled:opacity-50"
+                onClick={async () => {
+                  setExportingXls(true);
+                  setExportError(null);
+                  try { await downloadAuditExcel(auditId, audit.pageTitle); }
+                  catch (e) { setExportError('Excel export failed'); }
+                  finally { setExportingXls(false); }
+                }}
+              >
+                <FileSpreadsheet className="w-4 h-4 text-green-600" />
+                {exportingXls ? 'Generating…' : 'Download Excel'}
+              </button>
+            </div>
+          </div>
+
           <button
             onClick={() => router.push(`/dashboard?url=${encodeURIComponent(audit.url)}`)}
             id="re-audit-btn"
@@ -224,6 +277,14 @@ export default function AuditReportPage() {
           </button>
         </div>
       </div>
+
+      {/* Export error */}
+      {exportError && (
+        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
+          <XCircle className="w-4 h-4 flex-shrink-0" />
+          {exportError}
+        </div>
+      )}
 
       {/* Score Gauges */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">

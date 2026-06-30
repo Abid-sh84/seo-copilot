@@ -115,3 +115,33 @@ export async function deleteBlog(id: string) {
   const response = await apiClient.delete(`/api/blog/${id}`);
   return response.data;
 }
+
+// ── Export API Functions ──────────────────────────────────────────────────────
+// These use raw fetch with the backend JWT so the browser can stream the binary
+// blob and trigger a native download without the axios interceptor layer.
+
+async function downloadFile(url: string, filename: string) {
+  const token = await getBackendToken();
+  const res = await fetch(`${API_BASE_URL}${url}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error(`Export failed: ${res.statusText}`);
+  const blob = await res.blob();
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(href);
+}
+
+export async function downloadAuditPDF(auditId: string, pageTitle?: string) {
+  const slug = (pageTitle ?? auditId).replace(/\s+/g, '-').toLowerCase().substring(0, 40);
+  return downloadFile(`/api/export/pdf/${auditId}`, `seo-copilot-${slug}.pdf`);
+}
+
+export async function downloadAuditExcel(auditId: string, pageTitle?: string) {
+  const slug = (pageTitle ?? auditId).replace(/\s+/g, '-').toLowerCase().substring(0, 40);
+  return downloadFile(`/api/export/excel/${auditId}`, `seo-copilot-${slug}.xlsx`);
+}
+
