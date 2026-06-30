@@ -3,20 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-import { BarChart3, LogOut, Search, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-=======
 import { useState, useEffect } from 'react';
 import {
   BarChart3, LogOut, PenLine, Search,
   Settings, ChevronLeft, ChevronRight,
 } from 'lucide-react';
->>>>>>> Stashed changes
-=======
-import { BarChart3, LogOut, PenLine, Search, Settings } from 'lucide-react';
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -57,31 +48,6 @@ export function Sidebar({ user }: SidebarProps) {
   return (
     <aside
       id="dashboard-sidebar"
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-      className="w-64 border-r border-border flex flex-col bg-sidebar"
-=======
-      className="w-64 border-r border-slate-200 flex flex-col bg-white shrink-0"
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
-    >
-      {/* Logo — clicking navigates to home page */}
-      <Link
-        href="/"
-        id="sidebar-home-link"
-        className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200 flex-shrink-0 group transition-opacity hover:opacity-80"
-      >
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
-          <Search className="w-4 h-4 text-white" />
-        </div>
-        <span className="font-bold text-base text-slate-900">
-          SEO <span className="text-blue-600">Copilot</span>
-        </span>
-      </Link>
-
-      {/* Navigation */}
-<<<<<<< HEAD
-      <nav className="flex-1 px-3 py-4 space-y-1">
-=======
       className={cn(
         'relative flex flex-col bg-white border-r border-slate-200 shrink-0 transition-[width] duration-300 ease-in-out',
         collapsed ? 'w-16' : 'w-64'
@@ -131,10 +97,6 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* ── Navigation ── */}
       <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto overflow-x-hidden">
->>>>>>> Stashed changes
-=======
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
         {navItems.map((item) => {
           const isActive =
             item.href === '/dashboard'
@@ -147,16 +109,8 @@ export function Sidebar({ user }: SidebarProps) {
               id={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               title={collapsed ? item.label : undefined}
               className={cn(
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
-=======
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 collapsed ? 'justify-center' : '',
->>>>>>> Stashed changes
-=======
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
                 isActive
                   ? 'bg-blue-50 text-blue-600 border border-blue-100'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -169,29 +123,6 @@ export function Sidebar({ user }: SidebarProps) {
         })}
       </nav>
 
-<<<<<<< Updated upstream
-      {/* User Profile */}
-      <div className="p-3 border-t border-slate-200 shrink-0">
-        <div className="flex items-center gap-3 px-2 py-2 mb-2 rounded-lg bg-slate-50">
-          {user.image ? (
-            <img
-              src={user.image}
-              alt={user.name ?? 'User'}
-              className="w-8 h-8 rounded-full ring-1 ring-slate-200"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
-              {user.name?.[0]?.toUpperCase() ?? 'U'}
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold truncate text-slate-900">{user.name ?? 'User'}</p>
-            <p className="text-xs text-slate-500 truncate">{user.email ?? ''}</p>
-          </div>
-        </div>
-<<<<<<< HEAD
-        <Button
-=======
       {/* ── User Profile ── */}
       <div className="p-2 border-t border-slate-200 shrink-0">
         {!collapsed && (
@@ -216,19 +147,8 @@ export function Sidebar({ user }: SidebarProps) {
 
         {/* Sign out — icon-only when collapsed */}
         <button
->>>>>>> Stashed changes
-=======
-        <button
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
           id="sidebar-signout-btn"
           onClick={() => signOut({ callbackUrl: '/login' })}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </Button>
-=======
           title={collapsed ? 'Sign out' : undefined}
           className={cn(
             'w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-500',
@@ -239,14 +159,6 @@ export function Sidebar({ user }: SidebarProps) {
           <LogOut className="w-4 h-4 shrink-0" />
           {!collapsed && 'Sign Out'}
         </button>
->>>>>>> Stashed changes
-=======
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </button>
->>>>>>> d1af9a361158112f6cbb11ad4720e1435fddb31e
       </div>
     </aside>
   );
